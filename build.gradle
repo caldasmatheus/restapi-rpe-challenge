@@ -2,7 +2,7 @@ plugins {
     id 'java'
 }
 
-group 'br.com.sicredi'
+group 'br.com.rpe'
 version '1.0-SNAPSHOT'
 
 repositories {
