@@ -1,10 +1,13 @@
 package funcional;
 
+import static utils.JsonUtils.convertToJson;
+
 import dataprovider.ReqresDataProvider;
+import dto.UserDTO;
 import io.restassured.response.Response;
 import org.testng.annotations.Test;
 import spec.RequestSpecification;
-import util.TestRule;
+import utils.TestRule;
 
 import java.util.List;
 import java.util.Random;
@@ -158,22 +161,22 @@ public class ReqResTests extends TestRule {
         assertThat("Corpo da resposta deve ser um objeto vazio {}", response.asString(), equalTo("{}"));
     }
 
-    @Test(dataProvider = "userData", dataProviderClass = ReqresDataProvider.class)
-    public void testPostCreateUser(String name, String job) {
-        String requestBody = String.format("{\"name\":\"%s\",\"job\":\"%s\"}", name, job);
+    @Test(dataProvider = "creatingUser", dataProviderClass = ReqresDataProvider.class)
+    public void testPostCreateUser(UserDTO user) {
+        String requestBody = convertToJson(user);
 
         Response response = given()
-            .spec(RequestSpecification.getSpec())
-            .body(requestBody)
-        .when()
-            .post("/users")
-        .then()
-            .statusCode(SC_CREATED)
-            .body("name", equalTo(name))
-            .body("job", equalTo(job))
-            .body("id", not(emptyOrNullString()))
-            .body("createdAt", not(emptyOrNullString()))
-            .extract().response();
+                .spec(RequestSpecification.getSpec())
+                .body(requestBody)
+                .when()
+                .post("/users")
+                .then()
+                .statusCode(SC_CREATED)
+                .body("name", equalTo(user.name()))
+                .body("job", equalTo(user.job()))
+                .body("id", not(emptyOrNullString()))
+                .body("createdAt", not(emptyOrNullString()))
+                .extract().response();
 
         String idCriado = response.jsonPath().getString("id");
         String createdAt = response.jsonPath().getString("createdAt");

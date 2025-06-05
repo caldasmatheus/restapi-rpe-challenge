@@ -7,7 +7,7 @@ import io.restassured.filter.log.LogDetail;
 import io.restassured.filter.log.ResponseLoggingFilter;
 import io.restassured.http.ContentType;
 
-import static util.CommonUtils.retornarValorArquivoConfiguracao;
+import static utils.CommonUtils.retornarValorArquivoConfiguracao;
 
 public class RequestSpecification {
 

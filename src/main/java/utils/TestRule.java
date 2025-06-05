@@ -1,4 +1,4 @@
-package util;
+package utils;
 
 import com.aventstack.extentreports.testng.listener.ExtentITestListenerAdapter;
 import org.testng.annotations.Listeners;
