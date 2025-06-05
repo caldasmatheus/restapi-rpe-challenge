@@ -3,6 +3,7 @@ package funcional;
 import static utils.JsonUtils.convertToJson;
 
 import dataprovider.ReqresDataProvider;
+import dto.UserCreateAndLoginDTO;
 import dto.UserDTO;
 import io.restassured.response.Response;
 import org.testng.annotations.Test;
@@ -168,9 +169,9 @@ public class ReqResTests extends TestRule {
         Response response = given()
                 .spec(RequestSpecification.getSpec())
                 .body(requestBody)
-                .when()
+            .when()
                 .post("/users")
-                .then()
+            .then()
                 .statusCode(SC_CREATED)
                 .body("name", equalTo(user.name()))
                 .body("job", equalTo(user.job()))
@@ -185,25 +186,21 @@ public class ReqResTests extends TestRule {
         assertThat("Campo createdAt não deve ser nulo", createdAt, notNullValue());
     }
 
-    @Test
-    public void testPutUpdateUser() {
-        Faker faker = new Faker();
-        String name = faker.name().fullName();
-        String job = faker.job().title();
-
-        String requestBody = "{\"name\":\"" + name + "\",\"job\":\"" + job + "\"}";
+    @Test(dataProvider = "updateUser", dataProviderClass = ReqresDataProvider.class)
+    public void testPutUpdateUser(UserDTO user) {
+        String requestBody = convertToJson(user);
 
         given()
-            .spec(RequestSpecification.getSpec())
-            .pathParam("userId", 2)
-            .body(requestBody)
-        .when()
-            .put("/users/{userId}")
-        .then()
-            .statusCode(SC_OK)
-            .body("name", equalTo(name))
-            .body("job", equalTo(job))
-            .body("updatedAt", notNullValue());
+                .spec(RequestSpecification.getSpec())
+                .pathParam("userId", 2)
+                .body(requestBody)
+            .when()
+                .put("/users/{userId}")
+            .then()
+                .statusCode(SC_OK)
+                .body("name", equalTo(user.name()))
+                .body("job", equalTo(user.job()))
+                .body("updatedAt", notNullValue());
     }
 
     @Test
@@ -262,9 +259,9 @@ public class ReqResTests extends TestRule {
         assertThat("Resposta do delete deve estar vazia", respostaDelete.asString(), isEmptyString());
     }
 
-    @Test
-    public void testPostRegisterSuccessful() {
-        String requestBody = "{ \"email\": \"eve.holt@reqres.in\", \"password\": \"pistol\" }";
+    @Test(dataProvider = "registerSuccessful", dataProviderClass = ReqresDataProvider.class)
+    public void testPostRegisterSuccessful(UserCreateAndLoginDTO registerData) {
+        String requestBody = convertToJson(registerData);
 
         Response response = given()
                 .spec(RequestSpecification.getSpec())
@@ -284,9 +281,9 @@ public class ReqResTests extends TestRule {
         assertThat("ID deve ser fornecido", id, notNullValue());
     }
 
-    @Test
-    public void testPostRegisterUnsuccessful() {
-        String requestBody = "{ \"email\": \"eve.holt@reqres.in\" }";
+    @Test(dataProvider = "registerUnsuccessful", dataProviderClass = ReqresDataProvider.class)
+    public void testPostRegisterUnsuccessful(UserCreateAndLoginDTO registerData) {
+        String requestBody = convertToJson(registerData);
 
         Response response = given()
                 .spec(RequestSpecification.getSpec())
@@ -302,9 +299,9 @@ public class ReqResTests extends TestRule {
         assertThat("Mensagem de erro deve ser 'Missing password'", errorMsg, equalTo("Missing password"));
     }
 
-    @Test
-    public void testPostLoginSuccessful() {
-        String requestBody = "{ \"email\": \"eve.holt@reqres.in\", \"password\": \"cityslicka\" }";
+    @Test(dataProvider = "loginSuccessful", dataProviderClass = ReqresDataProvider.class)
+    public void testPostLoginSuccessful(UserCreateAndLoginDTO loginData) {
+        String requestBody = convertToJson(loginData);
 
         Response response = given()
                 .spec(RequestSpecification.getSpec())
@@ -320,9 +317,9 @@ public class ReqResTests extends TestRule {
         assertThat("Token retornado deve ser 'QpwL5tke4Pnpja7X4'", token, equalTo("QpwL5tke4Pnpja7X4"));
     }
 
-    @Test
-    public void testPostLoginUnsuccessful() {
-        String requestBody = "{ \"email\": \"eve.holt@reqres.in\" }";
+    @Test(dataProvider = "loginUnsuccessful", dataProviderClass = ReqresDataProvider.class)
+    public void testPostLoginUnsuccessful(UserCreateAndLoginDTO loginData) {
+        String requestBody = convertToJson(loginData);
 
         Response response = given()
                 .spec(RequestSpecification.getSpec())
