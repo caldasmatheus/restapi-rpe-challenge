@@ -1,0 +1,34 @@
+plugins {
+    id 'java'
+}
+
+group 'br.com.sicredi'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+compileJava.options.encoding = "UTF-8"
+compileTestJava.options.encoding = "UTF-8"
+
+dependencies {
+
+    // https://mvnrepository.com/artifact/com.aventstack/extentreports
+    implementation group: 'com.aventstack', name: 'extentreports', version: '4.1.5'
+
+    // https://mvnrepository.com/artifact/com.aventstack/extentreports-testng-adapter
+    implementation group: 'com.aventstack', name: 'extentreports-testng-adapter', version: '1.0.7'
+
+    // https://mvnrepository.com/artifact/io.rest-assured/rest-assured
+    implementation group: 'io.rest-assured', name: 'rest-assured', version: '5.2.0'
+
+    // https://mvnrepository.com/artifact/org.testng/testng
+    implementation group: 'org.testng', name: 'testng', version: '7.6.1'
+
+    testImplementation 'com.github.javafaker:javafaker:1.0.2'
+}
+
+test {
+    useTestNG()
+}
